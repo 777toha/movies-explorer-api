@@ -1,14 +1,13 @@
 import express from 'express';
 import {
-user
+  getUserInfo,
+  updateUserInfo
 } from '../controllers/user';
-// import {
-
-// } from '../middlewares/validate';
+import { userUpdateValidate } from '../middlewares/validate';
 
 const userRouter = express.Router();
 
-userRouter.get('/users/me', auth, user);
-userRouter.patch('/users/me', auth, user);
+userRouter.get('/me', getUserInfo);
+userRouter.patch('/me', userUpdateValidate, updateUserInfo);
 
 export default userRouter;

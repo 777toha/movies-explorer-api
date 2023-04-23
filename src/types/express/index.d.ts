@@ -2,16 +2,18 @@ declare global {
   namespace Express {
     export interface Request {
       user?: {
-        id: string;
+        _id: string;
         name: string;
-      };
+      },
     }
 
     export interface Response {
-      send: {
+      send?: {
         massage: string
       }
-      status: number
+      status?: number
     }
   }
 }
+
+export { };

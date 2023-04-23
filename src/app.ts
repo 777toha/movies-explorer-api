@@ -1,20 +1,29 @@
 import express, { Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
-import userRouter from './routes/user';
-
-dotenv.config();
+import mongoose from 'mongoose';
+import { errors } from 'celebrate';
+import { requestLogger, errorLogger } from './middlewares/logger';
+import { router } from './routes/index';
+import { DB_URL, PORT } from './utils/config';
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
+mongoose.connect(DB_URL);
 
-app.use('/', userRouter);
-app.use('/', movieRouter);
+app.use(express.json());
+app.use(requestLogger);
+
+app.use('/', router);
+
+app.use(errorLogger);
+
+app.use(errors());
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  res.status(err.statusCode).send({ message: err.message });
+  const statusCode = err.statusCode || 500;
+
+  const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
+  res.status(statusCode).send({ message });
+  next();
 });
 
-app.listen(PORT, () => {
-  console.log('Hello, TS')
-});
+app.listen(PORT);
