@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getUserInfo,
-  updateUserInfo
+  updateUserInfo,
 } from '../controllers/user';
 import { userUpdateValidate } from '../middlewares/validate';
 

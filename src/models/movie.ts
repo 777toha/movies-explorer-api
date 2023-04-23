@@ -67,4 +67,6 @@ const Movie = mongoose.model('movie', new mongoose.Schema<Movie>({
   },
 }));
 
+export type MovieDocument = mongoose.HydratedDocument<Movie>;
+
 export default Movie;

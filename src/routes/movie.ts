@@ -2,7 +2,7 @@ import express from 'express';
 import {
   getMovieById,
   createMovie,
-  deleteMovie
+  deleteMovie,
 } from '../controllers/movie';
 import { movieValidate, movieIdValidate } from '../middlewares/validate';
 

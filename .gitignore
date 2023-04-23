@@ -2,7 +2,6 @@
 logs
 *.log
 npm-debug.log*
-build
 
 # Dependency directory
 node_modules
@@ -16,3 +15,4 @@ node_modules
 .vscode
 
 *.env
+build/

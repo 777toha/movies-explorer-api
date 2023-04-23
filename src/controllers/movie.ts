@@ -1,20 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import Movie from '../models/movie';
+import { ParamsDictionary } from 'express-serve-static-core';
+import Movie, { MovieDocument } from '../models/movie';
 
 import NotFoundError from '../errors/NotFoundError';
 
 interface MovieData {
-    country: string;
-    director: string;
-    duration: number;
-    year: string;
-    description: string;
-    image: string;
-    trailerLink: string;
-    thumbnail: string;
-    movieId: number;
-    nameRU: string;
-    nameEN: string;
+  country: string;
+  director: string;
+  duration: number;
+  year: string;
+  description: string;
+  image: string;
+  trailerLink: string;
+  thumbnail: string;
+  movieId: number;
+  nameRU: string;
+  nameEN: string;
+}
+
+interface DeleteMovieParams {
+  movieId: string
 }
 
 const getMovieById = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,24 +31,11 @@ const getMovieById = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-const createMovie = async (req: Request, res: Response, next: NextFunction) => {
+const createMovie = async (req: Request<ParamsDictionary, MovieDocument, MovieData>, res: Response, next: NextFunction) => {
   try {
-    const movieData: MovieData = {
-      country: req.body.country,
-      director: req.body.director,
-      duration: req.body.duration,
-      year: req.body.year,
-      description: req.body.description,
-      image: req.body.image,
-      trailerLink: req.body.trailerLink,
-      nameRU: req.body.nameRU,
-      nameEN: req.body.nameEN,
-      thumbnail: req.body.thumbnail,
-      movieId: req.body.movieId
-    };
     const { _id } = req.user!
     const createMovie = await Movie.create({
-      ...movieData,
+      ...req.body,
       owner: _id
     });
     res.send(createMovie);
@@ -52,7 +44,7 @@ const createMovie = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deleteMovie = async (req: Request, res: Response, next: NextFunction) => {
+const deleteMovie = async (req: Request<DeleteMovieParams>, res: Response, next: NextFunction) => {
   try {
     const movie = await Movie.findByIdAndDelete(req.params.movieId);
     if (!movie) {

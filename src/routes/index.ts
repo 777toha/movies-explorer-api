@@ -23,5 +23,5 @@ router.use('*', (req: Request, res: Response, next: NextFunction) => {
 });
 
 export {
-  router
-}
+  router,
+};

@@ -1,15 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { NODE_ENV, JWT_SECRET } from '../utils/config';
 import UnauthorizedError from '../errors/UnauthorizedError';
+
+interface Payload {
+  _id: string;
+  name: string;
+}
 
 const auth = (req: Request, res: Response, next: NextFunction): void => {
   if (req.cookies.jwt) {
     const token: string = req.cookies.jwt;
-    let payload: any;
+    let payload: object;
 
 
     try {
-      payload = jwt.verify(token, `${process.env.NODE_ENV}` === 'production' ? `${process.env.JWT_SECRET}` : 'dev-secret');
+      payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
       req.user = payload;
       next();
     } catch (e) {
@@ -22,5 +28,5 @@ const auth = (req: Request, res: Response, next: NextFunction): void => {
 };
 
 export {
-  auth
-}
+  auth,
+};

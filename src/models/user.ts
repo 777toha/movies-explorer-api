@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import validator from 'validator';
 
 interface User {
@@ -15,19 +15,21 @@ const User = model('user', new Schema<User>({
       message: 'Invalid email',
     },
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     required: true,
-    select: false
+    select: false,
   },
   name: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
 }));
 
-export default User;
+export type UserDocument = mongoose.HydratedDocument<User>;
+
+export { User };

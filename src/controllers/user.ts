@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
+import User, { UserDocument } from '../models/user';
+import { ParamsDictionary } from 'express-serve-static-core';
 
 import BadRequestError from '../errors/BadRequestError';
 import NotFoundError from '../errors/NotFoundError';
@@ -9,12 +10,10 @@ import ConflictError from '../errors/ConflictError';
 import UnauthorizedError from '../errors/UnauthorizedError';
 import { NODE_ENV, JWT_SECRET } from '../utils/config';
 
-interface CreateUserRequest extends Request {
-  body: {
-    name?: string;
-    email: string;
-    password: string;
-  };
+interface UserRequest {
+  name: string;
+  email: string;
+  password: string;
 }
 
 const getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
@@ -47,7 +46,7 @@ const updateUserInfo = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-const createUser = async (req: CreateUserRequest, res: Response, next: NextFunction): Promise<void> => {
+const createUser = async (req: Request<ParamsDictionary, UserDocument, UserRequest>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
       name,
@@ -78,7 +77,7 @@ const createUser = async (req: CreateUserRequest, res: Response, next: NextFunct
   }
 }
 
-const login = async (req: CreateUserRequest, res: Response, next: NextFunction): Promise<void> => {
+const login = async (req: Request<ParamsDictionary, UserDocument, UserRequest>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');

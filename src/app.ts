@@ -7,7 +7,14 @@ import { DB_URL, PORT } from './utils/config';
 
 const app = express();
 
-mongoose.connect(DB_URL);
+mongoose.connect(DB_URL)
+  .then(() => {
+    console.log('connected');
+  })
+  .catch(() => {
+    console.log('faild to connect');
+  });
+
 
 app.use(express.json());
 app.use(requestLogger);
@@ -26,4 +33,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`started on ${PORT}`);
+});
