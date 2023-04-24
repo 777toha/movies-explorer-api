@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-interface Movie {
+interface ModelMovie {
   country: string;
   director: string;
   duration: number;
@@ -15,7 +15,7 @@ interface Movie {
   nameEN: string;
 }
 
-const Movie = mongoose.model('movie', new mongoose.Schema<Movie>({
+const Movie = mongoose.model('movie', new mongoose.Schema<ModelMovie>({
   country: {
     type: String,
     required: true,
@@ -67,6 +67,6 @@ const Movie = mongoose.model('movie', new mongoose.Schema<Movie>({
   },
 }));
 
-export type MovieDocument = mongoose.HydratedDocument<Movie>;
+export type MovieDocument = mongoose.HydratedDocument<ModelMovie>;
 
 export default Movie;

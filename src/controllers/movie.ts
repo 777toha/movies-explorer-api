@@ -3,6 +3,7 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import Movie, { MovieDocument } from '../models/movie';
 
 import NotFoundError from '../errors/NotFoundError';
+import ForbiddenError from '../errors/ForbiddenError';
 
 interface MovieData {
   country: string;
@@ -18,10 +19,6 @@ interface MovieData {
   nameEN: string;
 }
 
-interface DeleteMovieParams {
-  movieId: string
-}
-
 const getMovieById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const movies = await Movie.find({});
@@ -31,26 +28,36 @@ const getMovieById = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-const createMovie = async (req: Request<ParamsDictionary, MovieDocument, MovieData>, res: Response, next: NextFunction) => {
+const createMovie = async (
+  req: Request<ParamsDictionary, MovieDocument, MovieData>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const { _id } = req.user!
-    const createMovie = await Movie.create({
+    const id = req.user?._id ?? '';
+    const postMovie = await Movie.create({
       ...req.body,
-      owner: _id
+      owner: id,
     });
-    res.send(createMovie);
+    res.send(postMovie);
   } catch (err) {
     next(err);
   }
 };
 
-const deleteMovie = async (req: Request<DeleteMovieParams>, res: Response, next: NextFunction) => {
+const deleteMovie = async (req: Request<ParamsDictionary>, res: Response, next: NextFunction) => {
   try {
-    const movie = await Movie.findByIdAndDelete(req.params.movieId);
-    if (!movie) {
-      next(new NotFoundError('Фильм не найден'));
+    const id: string = req.params.movieId;
+    const userId = req.user?._id ?? '';
+    if (userId === id) {
+      const movie = await Movie.findByIdAndDelete(id);
+      if (!movie) {
+        next(new NotFoundError('Фильм не найден'));
+      }
+      res.send({ message: 'Фильм удален' });
+    } else {
+      next(new ForbiddenError('У вас недотостаточно прав для удаления фильма'));
     }
-    res.send({ message: 'Фильм удален' });
   } catch (err) {
     next(err);
   }
@@ -59,5 +66,5 @@ const deleteMovie = async (req: Request<DeleteMovieParams>, res: Response, next:
 export {
   getMovieById,
   createMovie,
-  deleteMovie
-}
+  deleteMovie,
+};

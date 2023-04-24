@@ -10,9 +10,10 @@ const signupValidate = celebrate({
     password: Joi.string().required().messages({
       'any.require': 'Некорректный пароль',
     }),
-    name: Joi.string().min(2).max(30).required().messages({
-      'any.require': 'Некорректное имя пользователя',
-    }),
+    name: Joi.string().min(2).max(30).required()
+      .messages({
+        'any.require': 'Некорректное имя пользователя',
+      }),
   }),
 });
 
@@ -29,9 +30,10 @@ const signinValidate = celebrate({
 
 const userUpdateValidate = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required().messages({
-      'any.require': 'Некорректное имя пользователя',
-    }),
+    name: Joi.string().min(2).max(30).required()
+      .messages({
+        'any.require': 'Некорректное имя пользователя',
+      }),
     email: Joi.string().email().required().messages({
       'any.require': 'Некорректный пароль',
     }),

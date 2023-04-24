@@ -1,10 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
+import cookieParser from 'cookie-parser';
 import movieRouter from './movie';
 import userRouter from './user';
 import NotFoundError from '../errors/NotFoundError';
-import cookieParser from 'cookie-parser';
 import { createUser, login } from '../controllers/user';
-import { auth } from '../middlewares/auth';
+import auth from '../middlewares/auth';
 import { signupValidate, signinValidate } from '../middlewares/validate';
 
 const router = express.Router();
@@ -22,6 +22,4 @@ router.use('*', (req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError('Страница не найдена'));
 });
 
-export {
-  router,
-};
+export default router;

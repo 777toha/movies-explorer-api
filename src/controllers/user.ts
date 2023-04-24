@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import { Error } from 'mongoose';
+import { MongoError } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User, { UserDocument } from '../models/user';
 import { ParamsDictionary } from 'express-serve-static-core';
+import { User, UserDocument } from '../models/user';
 
 import BadRequestError from '../errors/BadRequestError';
 import NotFoundError from '../errors/NotFoundError';
@@ -17,9 +19,9 @@ interface UserRequest {
 }
 
 const getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user!._id;
+  const userId = req.user?._id ?? '';
   try {
-    const userInfo = await User.findById(userId).select("-password");
+    const userInfo = await User.findById(userId).select('-password');
     if (!userInfo) {
       next(new NotFoundError('Такой пользователь не найден'));
     }
@@ -30,13 +32,13 @@ const getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateUserInfo = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user!._id;
+  const userId = req.user?._id ?? '';
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       req.body,
-      { new: true, runValidators: true }
-    ).select("-password");
+      { new: true, runValidators: true },
+    ).select('-password');
     if (!updatedUser) {
       next(new NotFoundError('Такой пользователь не найден'));
     }
@@ -46,13 +48,17 @@ const updateUserInfo = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-const createUser = async (req: Request<ParamsDictionary, UserDocument, UserRequest>, res: Response, next: NextFunction): Promise<void> => {
+const createUser = async (
+  req: Request<ParamsDictionary, UserDocument, UserRequest>,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const {
       name,
       email,
       password,
-    } = req.body
+    } = req.body;
 
     const hash = await bcrypt.hash(password, 10);
 
@@ -66,18 +72,22 @@ const createUser = async (req: Request<ParamsDictionary, UserDocument, UserReque
       name: createdUser.name,
       email: createdUser.email,
     });
-  } catch (error: any) {
-    if (error.name === 'ValidationError') {
+  } catch (error) {
+    if (error instanceof Error.ValidationError) {
       next(new BadRequestError('Некорректные данные'));
-    } else if (error.code === 11000) {
+    } else if (error as MongoError) {
       next(new ConflictError('Такой email уже существует'));
     } else {
       next(error);
     }
   }
-}
+};
 
-const login = async (req: Request<ParamsDictionary, UserDocument, UserRequest>, res: Response, next: NextFunction): Promise<void> => {
+const login = async (
+  req: Request<ParamsDictionary, UserDocument, UserRequest>,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
@@ -97,15 +107,14 @@ const login = async (req: Request<ParamsDictionary, UserDocument, UserRequest>, 
     );
 
     res.cookie('jwt', token, { httpOnly: true }).send({ message: 'Успешно' });
-
   } catch (e) {
     next(e);
   }
-}
+};
 
 export {
   getUserInfo,
   updateUserInfo,
   createUser,
-  login
+  login,
 };

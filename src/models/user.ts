@@ -1,13 +1,13 @@
 import mongoose, { Schema, model } from 'mongoose';
 import validator from 'validator';
 
-interface User {
+interface ModelUser {
   email: string;
   password: string;
   name: string;
 }
 
-const User = model('user', new Schema<User>({
+const User = model('user', new Schema<ModelUser>({
   email: {
     type: String,
     validate: {
@@ -30,6 +30,8 @@ const User = model('user', new Schema<User>({
   },
 }));
 
-export type UserDocument = mongoose.HydratedDocument<User>;
+export type UserDocument = mongoose.HydratedDocument<ModelUser>;
 
-export { User };
+export {
+  User,
+};
