@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { NODE_ENV, JWT_SECRET } from '../utils/config';
 import UnauthorizedError from '../errors/UnauthorizedError';
+import Message from '../errors/ErrorMessages';
 
 type Payload = {
   _id: string;
@@ -18,10 +19,10 @@ const auth = (req: Request, res: Response, next: NextFunction): void => {
       req.user = payload;
       next();
     } catch (e) {
-      next(new UnauthorizedError('Необходима авторизация'));
+      next(new UnauthorizedError(Message.Unauthorized));
     }
   } else {
-    next(new UnauthorizedError('Необходима авторизация'));
+    next(new UnauthorizedError(Message.Unauthorized));
   }
 };
 

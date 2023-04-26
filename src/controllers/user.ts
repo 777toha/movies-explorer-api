@@ -10,6 +10,7 @@ import BadRequestError from '../errors/BadRequestError';
 import NotFoundError from '../errors/NotFoundError';
 import ConflictError from '../errors/ConflictError';
 import UnauthorizedError from '../errors/UnauthorizedError';
+import Message from '../errors/ErrorMessages';
 import { NODE_ENV, JWT_SECRET } from '../utils/config';
 
 interface UserRequest {
@@ -23,7 +24,7 @@ const getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userInfo = await User.findById(userId).select('-password');
     if (!userInfo) {
-      next(new NotFoundError('Такой пользователь не найден'));
+      next(new NotFoundError(Message.NotFoundErrorUser));
     }
     res.send(userInfo);
   } catch (error) {
@@ -40,11 +41,17 @@ const updateUserInfo = async (req: Request, res: Response, next: NextFunction) =
       { new: true, runValidators: true },
     ).select('-password');
     if (!updatedUser) {
-      next(new NotFoundError('Такой пользователь не найден'));
+      next(new NotFoundError(Message.NotFoundErrorUser));
     }
     res.send(updatedUser);
   } catch (error) {
-    next(error);
+    if (error instanceof Error.ValidationError) {
+      next(new BadRequestError(Message.BadRequestError));
+    } else if (error as MongoError) {
+      next(new ConflictError(Message.ConflictError));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -74,9 +81,9 @@ const createUser = async (
     });
   } catch (error) {
     if (error instanceof Error.ValidationError) {
-      next(new BadRequestError('Некорректные данные'));
+      next(new BadRequestError(Message.BadRequestError));
     } else if (error as MongoError) {
-      next(new ConflictError('Такой email уже существует'));
+      next(new ConflictError(Message.ConflictError));
     } else {
       next(error);
     }
@@ -92,12 +99,12 @@ const login = async (
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new UnauthorizedError('Неправильные почта или пароль');
+      throw new UnauthorizedError(Message.UnauthorizedLogin);
     }
 
     const data = await bcrypt.compare(password, user.password);
     if (!data) {
-      throw new UnauthorizedError('Неправильные почта или пароль');
+      throw new UnauthorizedError(Message.UnauthorizedLogin);
     }
 
     const token = jwt.sign(

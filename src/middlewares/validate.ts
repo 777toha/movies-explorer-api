@@ -35,7 +35,7 @@ const userUpdateValidate = celebrate({
         'any.require': 'Некорректное имя пользователя',
       }),
     email: Joi.string().email().required().messages({
-      'any.require': 'Некорректный пароль',
+      'any.require': 'Некорректный email',
     }),
   }),
 });
@@ -80,7 +80,7 @@ const movieValidate = celebrate({
 
 const movieIdValidate = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().hex().length(24),
+    _id: Joi.string().hex().length(24),
   }),
 });
 

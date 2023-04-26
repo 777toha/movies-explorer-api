@@ -4,6 +4,7 @@ import Movie, { MovieDocument } from '../models/movie';
 
 import NotFoundError from '../errors/NotFoundError';
 import ForbiddenError from '../errors/ForbiddenError';
+import Message from '../errors/ErrorMessages';
 
 interface MovieData {
   country: string;
@@ -21,7 +22,8 @@ interface MovieData {
 
 const getMovieById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const movies = await Movie.find({});
+    const id = req.user?._id || '';
+    const movies = await Movie.find({ owner: id });
     res.send(movies);
   } catch (err) {
     next(err);
@@ -46,17 +48,18 @@ const createMovie = async (
 };
 
 const deleteMovie = async (req: Request<ParamsDictionary>, res: Response, next: NextFunction) => {
+  const userId = req.user?._id ?? '';
   try {
-    const id: string = req.params.movieId;
-    const userId = req.user?._id ?? '';
-    if (userId === id) {
-      const movie = await Movie.findByIdAndDelete(id);
-      if (!movie) {
-        next(new NotFoundError('Фильм не найден'));
+    const movieFind = await Movie.findById(req.params._id)
+      .orFail(new NotFoundError(Message.NotFoundErrorMovie));
+    if (movieFind.owner._id.toString() === userId) {
+      const movieDelete = await Movie.findByIdAndDelete(req.params._id);
+      if (!movieDelete) {
+        next(new NotFoundError(Message.NotFoundErrorMovie));
       }
       res.send({ message: 'Фильм удален' });
     } else {
-      next(new ForbiddenError('У вас недотостаточно прав для удаления фильма'));
+      next(new ForbiddenError(Message.ForbiddenErrorMovie));
     }
   } catch (err) {
     next(err);

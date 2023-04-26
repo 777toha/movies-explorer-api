@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 
 interface ModelMovie {
   country: string;
@@ -39,14 +40,26 @@ const Movie = mongoose.model('movie', new mongoose.Schema<ModelMovie>({
   image: {
     type: String,
     required: true,
+    validate: {
+      validator: (url: string) => validator.isURL(url),
+      message: 'Некорректная ссылка на постер к фильму',
+    },
   },
   trailerLink: {
     type: String,
     required: true,
+    validate: {
+      validator: (url: string) => validator.isURL(url),
+      message: 'Некорректная ссылка на трейлер фильма',
+    },
   },
   thumbnail: {
     type: String,
     required: true,
+    validate: {
+      validator: (url: string) => validator.isURL(url),
+      message: 'Некорректное миниатюрное изображение постера к фильму',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
