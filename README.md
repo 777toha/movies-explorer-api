@@ -4,6 +4,6 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.101.106
+IP-адрес 158.160.46.118
 
 Backend https://api.best-movie.nomoredomains.monster
