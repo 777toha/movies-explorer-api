@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import { errors } from 'celebrate';
 import helmet from 'helmet';
@@ -17,6 +18,15 @@ mongoose.connect(DB_URL)
   .catch(() => {
     logger.info('faild to connect');
   });
+
+app.use(cors({
+  origin: ['http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://best-movie.nomoredomains.monster',
+    'http://best-movie.nomoredomains.monster',
+  ],
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+}));
 
 app.use(helmet());
 app.use(express.json());
