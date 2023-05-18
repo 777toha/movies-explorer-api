@@ -113,7 +113,7 @@ const login = async (
       { expiresIn: '7d' },
     );
 
-    res.cookie('jwt', token, { httpOnly: true }).send({ message: 'Успешно' });
+    res.cookie('jwt', token, { httpOnly: true, sameSite: 'none' }).send({ message: 'Успешно' });
   } catch (e) {
     next(e);
   }
