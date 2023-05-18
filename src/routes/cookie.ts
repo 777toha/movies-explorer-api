@@ -2,8 +2,8 @@ import { Router, Request, Response } from 'express';
 
 const cookieRouter = Router();
 
-cookieRouter.get('/', (req: Request, res: Response) => {
-  const cookie = req.cookies('jwt');
+cookieRouter.get('/check-cookie', (req: Request, res: Response) => {
+  const cookie = req.cookies.jwt;
   if (cookie) {
     res.send({ valid: true });
   } else {
