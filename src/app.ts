@@ -22,6 +22,7 @@ mongoose.connect(DB_URL)
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(helmet());
