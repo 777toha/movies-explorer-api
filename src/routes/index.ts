@@ -16,7 +16,7 @@ router.use(cookieRouter);
 router.post('/signup', signupValidate, createUser);
 router.post('/signin', signinValidate, login);
 router.use(auth);
-router.get('/signout', (req: Request, res: Response) => {
+router.post('/signout', (req: Request, res: Response) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
 router.use('/users', userRouter);
