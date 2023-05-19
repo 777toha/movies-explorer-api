@@ -17,19 +17,12 @@ mongoose.connect(DB_URL)
   })
   .catch(() => {
     logger.info('faild to connect');
-  });
+});
 
-const corsOptions = {
-  origin: ['http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'https://best-movie.nomoredomains.monster',
-    'http://best-movie.nomoredomains.monster',
-  ],
-  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+app.use(cors({
+  origin: 'http://localhost:3000',
   credentials: true,
-};
-
-app.use(cors(corsOptions));
+}));
 
 app.use(helmet());
 app.use(express.json());
