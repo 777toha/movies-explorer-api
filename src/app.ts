@@ -19,47 +19,6 @@ mongoose.connect(DB_URL)
     logger.info('faild to connect');
   });
 
-// const corsOptions = {
-//   origin: ['http://localhost:3000',
-//     'http://127.0.0.1:3000',
-//     'https://best-movie.nomoredomains.monster',
-//     'http://best-movie.nomoredomains.monster',
-//   ],
-//   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-//   credentials: true,
-// };
-
-// app.use(cors(corsOptions));
-
-// const allowedCors = ['http://localhost:3000',
-//   'http://127.0.0.1:3000',
-//   'https://best-movie.nomoredomains.monster',
-//   'http://best-movie.nomoredomains.monster',
-//   'https://api.best-movie.nomoredomains.monster',
-// ];
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-
-//   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-//   const requestHeaders = req.headers['access-control-request-headers'];
-//   if (typeof origin === 'string' && allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//     res.header('Access-Control-Allow-Credentials', 'true');
-//   }
-//   if (req.method === 'OPTIONS') {
-//     const headers = {
-//       'Access-Control-Allow-Methods': DEFAULT_ALLOWED_METHODS,
-//       'Access-Control-Allow-Headers': requestHeaders,
-//     };
-//     res.writeHead(200, headers);
-//     res.end();
-//     return;
-//   }
-
-//   next();
-// });
-
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
