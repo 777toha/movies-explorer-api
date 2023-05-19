@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import movieRouter from './movie';
 import userRouter from './user';
 import NotFoundError from '../errors/NotFoundError';
-import { createUser, login } from '../controllers/user';
+import { createUser, login, logout } from '../controllers/user';
 import auth from '../middlewares/auth';
 import { signupValidate, signinValidate } from '../middlewares/validate';
 import Message from '../errors/ErrorMessages';
@@ -16,9 +16,7 @@ router.use(cookieRouter);
 router.post('/signup', signupValidate, createUser);
 router.post('/signin', signinValidate, login);
 router.use(auth);
-router.get('/signout', (req: Request, res: Response) => {
-  res.clearCookie('jwt').send({ message: 'Выход' });
-});
+router.post('/signout', logout);
 router.use('/users', userRouter);
 router.use('/movies', movieRouter);
 router.use('*', (req: Request, res: Response, next: NextFunction) => {

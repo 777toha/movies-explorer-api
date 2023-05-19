@@ -113,7 +113,28 @@ const login = async (
       { expiresIn: '7d' },
     );
 
-    res.cookie('jwt', token, { httpOnly: true, sameSite: 'none', secure: false }).send({ message: 'Успешно' });
+    res.cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    }).send({ message: 'Успешно' });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const logout = async (
+  req: Request<ParamsDictionary, UserDocument, UserRequest>,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    }).send({ message: 'Логаут выполнен успешно.' });
   } catch (e) {
     next(e);
   }
@@ -124,4 +145,5 @@ export {
   updateUserInfo,
   createUser,
   login,
+  logout,
 };
