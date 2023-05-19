@@ -5,7 +5,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_TOKEN ?? 'dev-token';
 const NODE_ENV = process.env.NODE_ENV ?? 'dev';
 const DB_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb';
-const PORT = 3001;
+const PORT = 3000;
 
 export {
   JWT_SECRET,
