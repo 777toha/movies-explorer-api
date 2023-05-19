@@ -17,7 +17,7 @@ mongoose.connect(DB_URL)
   })
   .catch(() => {
     logger.info('faild to connect');
-  });
+});
 
 app.use(cors({
   origin: 'http://localhost:3000',
