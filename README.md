@@ -1,9 +1,8 @@
-# movies-explorer-api
+# Сайт-портфолио
 
-Адрес репозитория: https://github.com/777toha/movies-explorer-api
+Главная страница представляет собой информацию обо мне и информацию о проектах.
+Также, это онлайн-сервис по поиску фильмов на основе данных API "Beatfilm‑movies" с возможностью сохранения понравившихся.
 
-## Ссылки на проект
+[Ссылка на сайт](https://best-movie.nomoredomains.monster/)
 
-IP-адрес 158.160.46.118
-
-Backend https://api.best-movie.nomoredomains.monster
+[Ссылка на Backend](https://api.best-movie.nomoredomains.monster)
